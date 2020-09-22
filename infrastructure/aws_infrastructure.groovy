@@ -17,7 +17,7 @@ pipelineJob(BUILD_INFRASTRUCTURE){
         numToKeep(10)
     }
     parameters{
-        stringParam('BRANCH_NAME', BRANCH_NAME, 'CJK Branch Details')
+        stringParam('BRANCH_NAME', BRANCH_NAME, 'SCM Branch Details')
         stringParam('TERRAFORM_VERSION', TERRAFORM_VERSION, 'Version of Terraform to Deploy')
         stringParam('CJK_GIT_URL', CJK_GIT_URL, 'Terraform Project Infrastructure')
         choiceParam('OPERATION', ['apply', 'destroy'])
@@ -37,7 +37,7 @@ pipelineJob(BUILD_INFRASTRUCTURE){
                     }
                     branch('*/master')
                 }
-            scriptPath('Jenkins-Pipeline-Terraform/Jenkinsfile')
+            scriptPath('Jenkins-Pipeline-Terraform/infrastructure/Jenkinsfile')
             lightweight()
             }
         }
