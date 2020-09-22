@@ -1,0 +1,108 @@
+
+node(){
+    def workspace_dir = 'Webapp'
+    def operation = "${OPERATION}"
+    stage("Git checkout"){                
+        checkout(
+            [
+                $class: 'GitSCM',
+                branches: [[name: "${BRANCH_NAME}"]],
+                userRemoteConfigs: [[url: "${CJK_GIT_URL}", credentialsId: "${CREDENTIALS_ID}"]]
+            ]
+        )
+        println("GIT Checkout Success")          
+    }
+        
+    stage('Download Terraform'){
+        sh ('''
+	    #!/bin/bash
+	    if [ ! -d ${JENKINS_HOME}/project/terraform ]; then
+                echo $PWD
+		echo ${JENKINS_HOME}
+                mkdir -p ${JENKINS_HOME}/project
+                mkdir -p ${JENKINS_HOME}/project/terraform
+		cd ${JENKINS_HOME}/project/terraform
+	    else
+                echo "Terraform is already Installed"
+	    fi
+        ''')
+    }
+	
+       stage('Install Terraform'){
+	     dir(workspace_dir) {
+        	sh ('''
+	    		#!/bin/bash
+                	sudo yum install wget zip python-pip -y
+                	curl -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
+                	sudo unzip terraform.zip -d ${JENKINS_HOME}/project/terraform
+                	sudo rm -rf terraform.zip
+
+	        ''')
+	     }
+
+    }
+
+   stage('Initialize and Plan Terraform'){
+	    dir(workspace_dir){
+   	    	sh ('''
+   	        	echo $PWD
+   	        	terraform init -input=false -backend-config="bucket=${BUCKET_NAME}" -backend-config="region=${REGION}"
+   	        	terraform plan -out -plan.out
+			    echo "Plan success"
+   	    	''')
+	    }
+    }
+    
+    stage('Validate Terraform'){
+        try{
+            dir(workspace_dir){
+                sh ('''
+                    echo $PWD
+                    terraform validate
+                    echo "Validation Successful"
+                ''')
+            }
+        }
+        catch(e){
+            println("Template Validation Failed")
+        }
+    }
+    stage('Deploy Terraform'){
+        try{
+            dir(workspace_dir){    
+                if (operation == 'apply') {
+                    sh ('''
+                        terraform apply -input=false -auto-approve=true
+                        echo "Deployment Applied Successfully"
+                    ''')
+                    slack_notify()
+                }  
+                else if (operation == 'destroy'){
+                    sh ('''
+                        terraform destroy -input=false -auto-approve=true
+                        echo "Deployment Destroy Success"
+                    ''')
+                    slack_notify()
+                }
+            }
+        }
+        catch(e) {
+            println("Terraform Deployment Failed")
+        }
+        finally {
+            deleteDir()
+        }
+    }
+
+}
+def slack_notify(){
+    println("Slack Notification")
+    def attachments = [
+        [
+            title: 'Notification for Terraform Project',
+            text: 'Result of Deployment',
+            color: '#2eb886'
+        ]
+    ]
+    slackSend(channel: "${CHANNEL_NAME}", attachments: attachments)
+}     
