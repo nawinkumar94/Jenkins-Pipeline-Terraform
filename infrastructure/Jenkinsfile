@@ -32,13 +32,15 @@ node(){
 	     dir(workspace_dir) {
         	sh ('''
 	    		#!/bin/bash
-			chown 0:0 /var/jenkins_home/workspace/scm_terraform/Webapp -R
+			if [ "$(whoami)" != "root" ]
+			then
+    			    sudo su -s "$0"
+    			    exit
+			fi
                 	sudo apt-get install wget zip python-pip -y
                 	curl -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
                 	sudo unzip terraform.zip -d ${JENKINS_HOME}/project/terraform
                 	sudo rm -rf terraform.zip
-			chown 1000:1000 /var/jenkins_home/workspace/scm_terraform/Webapp -R
-
 	        ''')
 	     }
 
