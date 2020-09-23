@@ -32,10 +32,11 @@ node(){
 	     dir(workspace_dir) {
         	sh ('''
 	    		#!/bin/bash
-                	sudo yum install wget zip python-pip -y
+                	sudo -u root apt-get install wget zip python-pip -y
                 	curl -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
                 	sudo unzip terraform.zip -d ${JENKINS_HOME}/project/terraform
                 	sudo rm -rf terraform.zip
+			sudo -u jenkins
 
 	        ''')
 	     }
