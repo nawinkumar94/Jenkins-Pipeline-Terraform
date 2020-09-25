@@ -2,17 +2,17 @@
 node(){
     def workspace_dir = 'Webapp'
     def operation = "${OPERATION}"
-    stage("Git checkout"){                
+    stage("Git checkout"){
         checkout(
             [
                 $class: 'GitSCM',
                 branches: [[name: "${BRANCH_NAME}"]],
-                userRemoteConfigs: [[url: "${CJK_GIT_URL}", credentialsId: "${CREDENTIALS_ID}"]]
+                userRemoteConfigs: [[url: "${SCM_GIT_URL}", credentialsId: "${CREDENTIALS_ID}"]]
             ]
         )
-        println("GIT Checkout Success")          
+        println("GIT Checkout Success")
     }
-        
+
     stage('Download Terraform'){
         sh ('''
 	    #!/bin/bash
@@ -27,15 +27,11 @@ node(){
 	    fi
         ''')
     }
-	
+
        stage('Install Terraform'){
 	     dir(workspace_dir) {
         	sh ('''
-	    		#!/bin/bash
-                	sudo yum install wget zip python-pip -y
-                	curl -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-                	sudo unzip terraform.zip -d ${JENKINS_HOME}/project/terraform
-                	sudo rm -rf terraform.zip
+	    		install_terraform.sh
 
 	        ''')
 	     }
@@ -52,7 +48,7 @@ node(){
    	    	''')
 	    }
     }
-    
+
     stage('Validate Terraform'){
         try{
             dir(workspace_dir){
@@ -69,14 +65,14 @@ node(){
     }
     stage('Deploy Terraform'){
         try{
-            dir(workspace_dir){    
+            dir(workspace_dir){
                 if (operation == 'apply') {
                     sh ('''
                         terraform apply -input=false -auto-approve=true
                         echo "Deployment Applied Successfully"
                     ''')
                     slack_notify()
-                }  
+                }
                 else if (operation == 'destroy'){
                     sh ('''
                         terraform destroy -input=false -auto-approve=true
@@ -105,4 +101,4 @@ def slack_notify(){
         ]
     ]
     slackSend(channel: "${CHANNEL_NAME}", attachments: attachments)
-}     
+}

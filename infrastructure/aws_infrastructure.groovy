@@ -1,6 +1,6 @@
 BUILD_INFRASTRUCTURE = 'scm_terraform'
 PROJECT_NAME = 'scm'
-CJK_GIT_URL = 'https://github.com/nawinkumar94/Terraform-Aws-Two-Tier-Application.git'
+SCM_GIT_URL = 'https://github.com/nawinkumar94/Terraform-Aws-Two-Tier-Application.git'
 BRANCH_NAME = 'master'
 TERRAFORM_VERSION = '0.13.3'
 REGION = 'ap-south-1'
@@ -19,7 +19,7 @@ pipelineJob(BUILD_INFRASTRUCTURE){
     parameters{
         stringParam('BRANCH_NAME', BRANCH_NAME, 'SCM Branch Details')
         stringParam('TERRAFORM_VERSION', TERRAFORM_VERSION, 'Version of Terraform to Deploy')
-        stringParam('CJK_GIT_URL', CJK_GIT_URL, 'Terraform Project Infrastructure')
+        stringParam('SCM_GIT_URL', SCM_GIT_URL, 'Terraform Project Infrastructure')
         choiceParam('OPERATION', ['apply', 'destroy'])
         stringParam('REGION', defaultValue = REGION)
         stringParam('BUCKET_NAME', BUCKET_NAME)
@@ -37,7 +37,7 @@ pipelineJob(BUILD_INFRASTRUCTURE){
                     }
                     branch('*/master')
                 }
-            scriptPath('Jenkins-Pipeline-Terraform/infrastructure/Jenkinsfile')
+            scriptPath('infrastructure/Jenkinsfile')
             lightweight()
             }
         }
