@@ -4,4 +4,4 @@
 echo "****************************"
 echo "** Downloading terraform Docker Image ***"
 echo "****************************"
-docker-compose -f docker-compose.yml build --no-cache
+docker-compose -f terraform_build/docker-compose.yml build --no-cache
