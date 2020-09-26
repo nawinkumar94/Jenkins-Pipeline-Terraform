@@ -2,13 +2,12 @@ FROM jenkins/jenkins
 
 USER root
 
-TERRAFORM_VERSION="0.13.3"
-
 #install terraform
 
-RUN sudo yum install wget zip python-pip -y && \
-curl -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip && \
-unzip terraform.zip -d /var/jenkins_home/project/terraform && \
-rm -rf terraform.zip && \
+RUN apt-get update && \
+apt-get install wget unzip python-pip -y \
+wget https://releases.hashicorp.com/terraform/0.13.3/terraform_0.13.3_linux_amd64.zip \
+unzip terraform.zip -d ${JENKINS_HOME}/project/terraform
+RUN rm -rf terraform.zip
 
 USER jenkins
