@@ -31,7 +31,7 @@ node(){
        stage('Install Terraform'){
 	     dir(workspace_dir) {
         	sh ('''
-	    		./terraform/install_terraform.sh
+	    		./terraform_build/install_terraform.sh
 
 	        ''')
 	     }
