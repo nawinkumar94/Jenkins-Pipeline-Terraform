@@ -32,10 +32,9 @@ node(){
 	     dir(workspace_dir) {
         	sh ('''
 	    		#!/bin/bash
-                	sudo apt-get install wget zip python-pip -y
-                	curl -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-                	sudo unzip -o -qq terraform.zip -d ${JENKINS_HOME}/project/terraform
-                	sudo rm -rf terraform.zip
+                	curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+                	sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+                	sudo apt-get update && sudo apt-get install terraform
 			terraform -v
 	        ''')
 	     }
