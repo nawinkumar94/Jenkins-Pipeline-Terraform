@@ -34,7 +34,7 @@ node(){
 	    		#!/bin/bash
                 	sudo apt-get install wget zip python-pip -y
                 	curl -o terraform.zip https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip
-                	sudo unzip terraform.zip -d ${JENKINS_HOME}/project/terraform
+                	sudo unzip -o -qq terraform.zip -d ${JENKINS_HOME}/project/terraform
                 	sudo rm -rf terraform.zip
 
 	        ''')
