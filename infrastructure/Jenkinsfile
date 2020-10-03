@@ -74,7 +74,7 @@ node(){
         println("Generating Terraform Plan for Apply")
         ansiColor('xterm') {
           sh ('''
-            terraform plan -input=false -plan.out
+            terraform plan -input=false -out=plan.out
             echo "Plan success"
           ''')
           }
@@ -83,7 +83,7 @@ node(){
         println("Generating Terraform Plan for Destroy")
         ansiColor('xterm') {
           sh ('''
-            terraform plan -destroy -input=false -plan.out
+            terraform plan -destroy -input=false -out=plan.out
             ''')
             }
           }
@@ -96,7 +96,7 @@ node(){
                 if (operation == 'apply') {
                 ansiColor('xterm') {
                     sh ('''
-                        terraform apply -input=false -auto-approve=true
+                        terraform apply -input=false -auto-approve=true plan.out
                         echo "Deployment Applied Successfully"
                     ''')
                     slack_notify()
