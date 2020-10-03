@@ -63,8 +63,9 @@ node(){
                 ''')
             }
         }
-        catch(e){
+        catch(err){
             println("Template Validation Failed")
+	    println(err)
         }
     }
     stage('Deploy Terraform'){
@@ -86,8 +87,9 @@ node(){
                 }
             }
         }
-        catch(e) {
+        catch(err) {
             println("Terraform Deployment Failed")
+	    println(err)
         }
         finally {
             deleteDir()
