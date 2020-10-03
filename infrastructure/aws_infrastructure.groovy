@@ -7,7 +7,6 @@ REGION = 'ap-south-1'
 BUCKET_NAME = 'terraform-state-nv-7777'
 CREDENTIALS_ID = 'a0c3162c-f34d-4420-b302-a2bf1ffac98e'
 OPERATION = 'OPERATION'
-CHANNEL_NAME = '#devops'
 
 pipelineJob(BUILD_INFRASTRUCTURE){
     displayName(PROJECT_NAME)
