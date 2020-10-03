@@ -44,10 +44,10 @@ node(){
 
    stage('Initialize and Validate Terraform'){
 	    dir(workspace_dir){
+        println("intializing terraform execution")
         ansiColor('xterm') {
    	    	sh ('''
    	        	echo $PWD
-              println("intializing terraform execution")
    	        	terraform init -input=false -backend-config="bucket=${BUCKET_NAME}" -backend-config="region=${REGION}"
             ''')
           }
@@ -71,18 +71,18 @@ node(){
     stage('Terraform Plan'){
       dir(workspace_dir){
         if (operation == 'apply') {
+        println("Generating Terraform Plan for Apply")
         ansiColor('xterm') {
           sh ('''
-            println("Generating Terraform Plan for Apply")
             terraform plan -input=false -plan.out
             echo "Plan success"
           ''')
           }
         }
         if (operation == 'destroy') {
+        println("Generating Terraform Plan for Destroy")
         ansiColor('xterm') {
           sh ('''
-            println("Generating Terraform Plan for Destroy")
             terraform plan -destroy -input=false -plan.out
             ''')
             }
