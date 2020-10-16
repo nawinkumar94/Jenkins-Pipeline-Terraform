@@ -24,7 +24,7 @@ node(){
                 mkdir -p ${JENKINS_HOME}/project/terraform
 		cd ${JENKINS_HOME}/project/terraform
 	    else
-                echo "Terraform is already Installed"
+                echo "Terraform directory created"
 	    fi
         ''')
     }
